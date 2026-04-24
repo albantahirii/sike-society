@@ -1,4 +1,4 @@
-﻿cabal-version:      3.0
+cabal-version:      3.0
 name:               sike-society
 version:            0.1.0.0
 synopsis:           A purely functional simulation engine of a secret society.
