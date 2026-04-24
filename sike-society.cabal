@@ -1,0 +1,62 @@
+﻿cabal-version:      3.0
+name:               sike-society
+version:            0.1.0.0
+synopsis:           A purely functional simulation engine of a secret society.
+description:
+  Sike Society is a functional simulation of a fictional secret society that
+  operates in the shadows to maintain peace across the globe. Seven symbolic
+  characters, each bounded in their own domain, respond collectively to
+  unpredictable external threats. The simulation is purely functional,
+  deterministic, and type-driven from the ground up.
+
+license:            MIT
+license-file:       LICENSE
+author:             Alban Tahiri
+maintainer:         255455768+albantahirii@users.noreply.github.com
+copyright:          (c) 2026 Alban Tahiri
+category:           Simulation
+build-type:         Simple
+extra-doc-files:    README.md
+                    docs/DESIGN.md
+
+common warnings
+    ghc-options: -Wall
+                 -Wcompat
+                 -Widentities
+                 -Wincomplete-record-updates
+                 -Wincomplete-uni-patterns
+                 -Wmissing-export-lists
+                 -Wmissing-home-modules
+                 -Wpartial-fields
+                 -Wredundant-constraints
+
+library
+    import:           warnings
+    exposed-modules:  Types
+                      Characters
+                      Threats
+                      Interaction
+                      Simulation
+    build-depends:    base         ^>=4.19
+                    , containers   ^>=0.6
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+executable sike-society
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base         ^>=4.19
+                    , sike-society
+    hs-source-dirs:   app
+    default-language: Haskell2010
+
+test-suite sike-society-test
+    import:           warnings
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Spec.hs
+    build-depends:    base         ^>=4.19
+                    , sike-society
+                    , QuickCheck   ^>=2.14
+                    , HUnit        ^>=1.6
