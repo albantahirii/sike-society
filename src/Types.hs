@@ -59,6 +59,7 @@ module Types
     activeThreats,
     membersInDomain,
     isPeaceful,
+    addCoins,
 
     -- * Type classes
     Engageable (..),
@@ -381,7 +382,11 @@ data World = World
     worldTick :: Tick,
     -- | The society's collective intelligence level. Increases passively
     -- through 'Terry100' and is consumed by some interactions.
-    worldIntelligence :: Intelligence
+    worldIntelligence :: Intelligence,
+    -- | The society's collective treasury of ocean coins, gathered by
+    -- 'Travis' from creatures abusing the seas. Held in common, never
+    -- distributed individually.
+    worldTreasury :: Int
   }
   deriving (Show, Eq)
 
@@ -418,6 +423,14 @@ membersInDomain d w =
 -- engage in passive activities (intelligence gathering, healing).
 isPeaceful :: World -> Bool
 isPeaceful w = null (activeThreats w)
+
+-- | Add coins to the society's collective treasury.
+--
+-- This is the canonical way for the simulation to record income from
+-- 'Travis' encounters with illegal underwater operators. The treasury
+-- is shared, never assigned to an individual member.
+addCoins :: Int -> World -> World
+addCoins amount w = w { worldTreasury = worldTreasury w + amount }
 
 -- | The 'Engageable' class describes anything that can engage a threat
 -- in combat. The canonical instance is 'Member', but the abstraction
