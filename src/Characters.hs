@@ -21,6 +21,10 @@ module Characters
 
     -- * Initial world
     initialWorld,
+
+    -- * Display
+    describeMember,
+    describeWorld,
   )
 where
 
@@ -152,3 +156,44 @@ initialWorld =
       worldIntelligence = 0,
       worldTreasury = 0
     }
+
+-- | Render a single 'Member' as a single-line string suitable for
+-- terminal output. Columns are aligned to make the seven members
+-- read as a coherent table when listed together.
+describeMember :: Member -> String
+describeMember m =
+  pad 10 (show (memberId m))
+    ++ "[" ++ pad 14 (archetype (memberId m)) ++ "]  "
+    ++ "energy: " ++ pad 4 (show (energy m))
+    ++ "influence: " ++ pad 4 (show (influence m))
+    ++ "state: " ++ show (state m)
+  where
+    pad n s = s ++ replicate (max 1 (n - length s)) ' '
+
+-- | Render the entire 'World' as a multi-line string suitable for
+-- terminal output. This is the primary way the simulation reports
+-- its state to the user.
+--
+-- The output is organised into a header, a roster of members, and
+-- a summary of world-level state (treasury, intelligence, threats).
+describeWorld :: World -> String
+describeWorld w =
+  unlines $
+    [ "============================================================",
+      "                    SIKE SOCIETY",
+      "============================================================",
+      "",
+      "Tick: " ++ show (worldTick w),
+      "",
+      "Members of the Society:",
+      ""
+    ]
+      ++ map (("  " ++) . describeMember) (Map.elems (worldMembers w))
+      ++ [ "",
+           "------------------------------------------------------------",
+           "Treasury:     " ++ show (worldTreasury w) ++ " ocean coins",
+           "Intelligence: " ++ show (worldIntelligence w),
+           "Threats:      " ++ show (length (activeThreats w)) ++ " active",
+           "Status:       " ++ if isPeaceful w then "Peaceful" else "Under threat",
+           "============================================================"
+         ]
