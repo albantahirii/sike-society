@@ -286,8 +286,6 @@ data ThreatKind
   = -- | Underwater creatures running illegal businesses in the deep.
     OceanAbuser
   | -- | Pilots transporting illegal cargo through the skies.
-    RoguePilots
-  | -- | Birds used for surveillance by criminal networks.
     SpyPigeons
   | -- | The historic adversary of Sike Society; capable of returning.
     Aliens
@@ -456,3 +454,4 @@ class Threatening a where
 
   -- | The domain in which this threatening entity operates.
   operatingDomain :: a -> Domain
+  
