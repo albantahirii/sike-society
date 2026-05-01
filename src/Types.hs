@@ -62,8 +62,8 @@ module Types
     addCoins,
 
     -- * Type classes
-    Engageable (..),
-    Threatening (..),
+    Interactable (..),
+    Transformable (..),
   )
 where
 
@@ -285,7 +285,7 @@ stateFromEnergy e
 data ThreatKind
   = -- | Underwater creatures running illegal businesses in the deep.
     OceanAbuser
-  | -- | Pilots transporting illegal cargo through the skies.
+  | -- | Birds used for surveillance by criminal networks.
     SpyPigeons
   | -- | The historic adversary of Sike Society; capable of returning.
     Aliens
@@ -430,28 +430,29 @@ isPeaceful w = null (activeThreats w)
 addCoins :: Int -> World -> World
 addCoins amount w = w { worldTreasury = worldTreasury w + amount }
 
--- | The 'Engageable' class describes anything that can engage a threat
--- in combat. The canonical instance is 'Member', but the abstraction
--- leaves room for future entities (allied factions, summoned defenders)
--- without modifying existing engagement logic.
+-- | The 'Interactable' class describes anything that can interact with
+-- a 'Threat' — meaning it can confront a menace and produce a transformed
+-- pair of (self, threat). The canonical instance is 'Member', but the
+-- abstraction leaves room for future entities (allied factions, summoned
+-- defenders) without modifying existing interaction logic.
 --
--- An 'engage' call returns the modified engager and the modified threat,
--- reflecting the bidirectional cost of combat: both sides change.
-class Engageable a where
-  -- | Engage a threat. Returns the updated engager and threat.
-  engage :: a -> Threat -> (a, Threat)
+-- An 'interact' call returns the modified interactor and the modified
+-- threat, reflecting the bidirectional cost of confrontation: both sides
+-- change.
+class Interactable a where
+  -- | Interact with a threat. Returns the updated interactor and threat.
+  interact :: a -> Threat -> (a, Threat)
 
-  -- | The current effectiveness of this engager against the given threat.
-  -- Used by the command logic to choose the best member for a task.
+  -- | The current effectiveness of this interactor against the given threat.
+  -- Used by command logic to choose the best member for a task.
   effectiveness :: a -> Threat -> Int
 
--- | The 'Threatening' class describes anything that can pose a threat
--- to the world. The canonical instance is 'Threat', but the abstraction
--- allows for richer adversary types in future iterations of the simulation.
-class Threatening a where
-  -- | The current hostility level of this threatening entity.
-  hostilityLevel :: a -> Int
-
-  -- | The domain in which this threatening entity operates.
-  operatingDomain :: a -> Domain
-  
+-- | The 'Transformable' class describes anything whose internal state can
+-- be transformed in response to an event. The canonical instance is 'Member',
+-- whose 'CharacterState' shifts with the unfolding of the simulation.
+--
+-- The 'transform' function takes a target state and a value, and returns
+-- the value updated to that state, leaving all other fields intact.
+class Transformable a where
+  -- | Transform the value to reflect the given new state.
+  transform :: CharacterState -> a -> a
